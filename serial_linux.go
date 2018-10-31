@@ -101,7 +101,7 @@ func openPort(name string, baud int, databits byte, parity Parity, stopbits Stop
 	fd := f.Fd()
 	vmin, vtime := posixTimeoutValues(readTimeout)
 	t := unix.Termios{
-		Iflag:  unix.IGNPAR,
+		Iflag:  unix.PARMRK | unix.INPCK,
 		Cflag:  cflagToUse,
 		Ispeed: rate,
 		Ospeed: rate,

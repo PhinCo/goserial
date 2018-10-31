@@ -85,8 +85,9 @@ func openPort(name string, baud int, databits byte, parity Parity, stopbits Stop
 		return nil, err
 	}
 
-	// Turn off break interrupts, CR->NL, Parity checks, strip, and IXON
-	st.c_iflag &= ^C.tcflag_t(C.BRKINT | C.ICRNL | C.INPCK | C.ISTRIP | C.IXOFF | C.IXON | C.PARMRK)
+	// Turn off break interrupts, CR->NL strip, and IXON
+	st.c_iflag &= ^C.tcflag_t(C.BRKINT | C.ICRNL | C.ISTRIP | C.IXOFF | C.IXON | C.IGNPAR)
+	st.c_iflag |= C.PARMRK | C.INPCK
 
 	// Select local mode, turn off parity, set to 8 bits
 	st.c_cflag &= ^C.tcflag_t(C.CSIZE | C.PARENB)
