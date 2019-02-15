@@ -87,7 +87,7 @@ func openPort(name string, baud int, databits byte, parity Parity, stopbits Stop
 
 	// Turn off break interrupts, CR->NL strip, and IXON
 	st.c_iflag &= ^C.tcflag_t(C.BRKINT | C.ICRNL | C.ISTRIP | C.IXOFF | C.IXON | C.IGNPAR)
-	st.c_iflag |= C.PARMRK | C.INPCK
+	st.c_iflag |= C.PARMRK | C.INPCK  // SAE: Mark framing errors
 
 	// Select local mode, turn off parity, set to 8 bits
 	st.c_cflag &= ^C.tcflag_t(C.CSIZE | C.PARENB)
