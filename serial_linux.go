@@ -101,7 +101,7 @@ func openPort(name string, baud int, databits byte, parity Parity, stopbits Stop
 	fd := f.Fd()
 	vmin, vtime := posixTimeoutValues(readTimeout)
 	t := unix.Termios{
-		Iflag:  unix.IGNPAR,
+		Iflag:  unix.PARMRK | unix.INPCK,
 		Cflag:  cflagToUse,
 		Ispeed: rate,
 		Ospeed: rate,
@@ -112,7 +112,7 @@ func openPort(name string, baud int, databits byte, parity Parity, stopbits Stop
 	if _, _, errno := unix.Syscall6(
 		unix.SYS_IOCTL,
 		uintptr(fd),
-		uintptr(unix.TCSETS),
+		uintptr(0x8030542B), //SAE was unix.TCSETS
 		uintptr(unsafe.Pointer(&t)),
 		0,
 		0,
