@@ -145,7 +145,8 @@ func (p *Port) Write(b []byte) (n int, err error) {
 // Discards data written to the port but not transmitted,
 // or data received but not read
 func (p *Port) Flush() error {
-	const TCFLSH = 0x540B
+	const TCFLSH = 0x5407			// SAE: Was 0x540B but wer were getting error: inappropriate ioctl for device
+									// Found source code of Linux version 4.14.63 ioctls.h at https://elixir.bootlin.com/linux/v4.14.63/source/arch/mips/include/uapi/asm/ioctls.h#L22
 	_, _, errno := unix.Syscall(
 		unix.SYS_IOCTL,
 		uintptr(p.f.Fd()),
