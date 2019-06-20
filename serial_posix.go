@@ -25,14 +25,14 @@ func openPort(name string, baud int, databits byte, parity Parity, stopbits Stop
 
 	fd := C.int(f.Fd())
 	if C.isatty(fd) != 1 {
-		f.Close()
+		_ = f.Close()
 		return nil, errors.New("File is not a tty")
 	}
 
 	var st C.struct_termios
 	_, err = C.tcgetattr(fd, &st)
 	if err != nil {
-		f.Close()
+		_ = f.Close()
 		return nil, err
 	}
 	var speed C.speed_t
@@ -70,18 +70,18 @@ func openPort(name string, baud int, databits byte, parity Parity, stopbits Stop
 	case 50:
 		speed = C.B50
 	default:
-		f.Close()
+		_ = f.Close()
 		return nil, fmt.Errorf("Unknown baud rate %v", baud)
 	}
 
 	_, err = C.cfsetispeed(&st, speed)
 	if err != nil {
-		f.Close()
+		_ = f.Close()
 		return nil, err
 	}
 	_, err = C.cfsetospeed(&st, speed)
 	if err != nil {
-		f.Close()
+		_ = f.Close()
 		return nil, err
 	}
 
@@ -142,7 +142,7 @@ func openPort(name string, baud int, databits byte, parity Parity, stopbits Stop
 
 	_, err = C.tcsetattr(fd, C.TCSANOW, &st)
 	if err != nil {
-		f.Close()
+		_ = f.Close()
 		return nil, err
 	}
 
@@ -153,7 +153,7 @@ func openPort(name string, baud int, databits byte, parity Parity, stopbits Stop
 		uintptr(0))
 	if e != 0 || r1 != 0 {
 		s := fmt.Sprint("Clearing NONBLOCK syscall error:", e, r1)
-		f.Close()
+		_ = f.Close()
 		return nil, errors.New(s)
 	}
 
